@@ -1,0 +1,49 @@
+@baseUrl = http://localhost:8080
+
+### Save Test Case 1 input
+POST {{baseUrl}}/api/v1/transporters/input
+Content-Type: application/json
+
+< ./test-case-1-input.json
+
+### Save Test Case 2 input
+POST {{baseUrl}}/api/v1/transporters/input
+Content-Type: application/json
+
+< ./test-case-2-input.json
+
+### Save main example input
+POST {{baseUrl}}/api/v1/transporters/input
+Content-Type: application/json
+
+< ./main-example-input.json
+
+### Get stored input
+GET {{baseUrl}}/api/v1/transporters/input
+
+### Assignment, maxTransporters = 2
+POST {{baseUrl}}/api/v1/transporters/assignment
+Content-Type: application/json
+
+< ./assignment-max2.json
+
+### Assignment, maxTransporters = 3
+POST {{baseUrl}}/api/v1/transporters/assignment
+Content-Type: application/json
+
+< ./assignment-max3.json
+
+### Assignment, maxTransporters = 4
+POST {{baseUrl}}/api/v1/transporters/assignment
+Content-Type: application/json
+
+< ./assignment-max4.json
+
+### Assignment, maxTransporters = 5
+POST {{baseUrl}}/api/v1/transporters/assignment
+Content-Type: application/json
+
+< ./assignment-max5.json
+
+### Health
+GET {{baseUrl}}/actuator/health

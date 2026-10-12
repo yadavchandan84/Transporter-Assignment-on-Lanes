@@ -1,0 +1,8 @@
+target
+.git
+.idea
+.vscode
+.agents
+*.md
+sample-data
+.mvn/wrapper/maven-wrapper.jar

@@ -1,0 +1,285 @@
+{
+    "info":  {
+                 "name":  "Transporter Assignment on Lanes",
+                 "schema":  "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+             },
+    "item":  [
+                 {
+                     "name":  "Save Test Case 1 input",
+                     "request":  {
+                                     "url":  {
+                                                 "host":  [
+                                                              "{{baseUrl}}"
+                                                          ],
+                                                 "raw":  "{{baseUrl}}/api/v1/transporters/input",
+                                                 "path":  [
+                                                              "api",
+                                                              "v1",
+                                                              "transporters",
+                                                              "input"
+                                                          ]
+                                             },
+                                     "method":  "POST",
+                                     "body":  {
+                                                  "raw":  "{\n  \"lanes\": [\n    {\"id\": 1, \"origin\": \"Mumbai\", \"destination\": \"Delhi\"},\n    {\"id\": 2, \"origin\": \"Delhi\", \"destination\": \"Bangalore\"},\n    {\"id\": 3, \"origin\": \"Chennai\", \"destination\": \"Kolkata\"},\n    {\"id\": 4, \"origin\": \"Pune\", \"destination\": \"Hyderabad\"},\n    {\"id\": 5, \"origin\": \"Ahmedabad\", \"destination\": \"Jaipur\"}\n  ],\n  \"transporters\": [\n    {\"id\": 1, \"name\": \"Transporter T1\", \"laneQuotes\": [{\"laneId\": 1, \"quote\": 20835}, {\"laneId\": 2, \"quote\": 10512}, {\"laneId\": 3, \"quote\": 22105}, {\"laneId\": 4, \"quote\": 42481}, {\"laneId\": 5, \"quote\": 19862}]},\n    {\"id\": 2, \"name\": \"Transporter T2\", \"laneQuotes\": [{\"laneId\": 1, \"quote\": 48844}, {\"laneId\": 2, \"quote\": 31326}, {\"laneId\": 3, \"quote\": 18640}, {\"laneId\": 4, \"quote\": 45828}, {\"laneId\": 5, \"quote\": 18297}]},\n    {\"id\": 3, \"name\": \"Transporter T3\", \"laneQuotes\": [{\"laneId\": 1, \"quote\": 39020}, {\"laneId\": 2, \"quote\": 20648}, {\"laneId\": 3, \"quote\": 31438}, {\"laneId\": 4, \"quote\": 36447}, {\"laneId\": 5, \"quote\": 12789}]},\n    {\"id\": 4, \"name\": \"Transporter T4\", \"laneQuotes\": [{\"laneId\": 1, \"quote\": 14400}, {\"laneId\": 2, \"quote\": 44514}, {\"laneId\": 3, \"quote\": 14316}, {\"laneId\": 4, \"quote\": 10678}, {\"laneId\": 5, \"quote\": 13032}]},\n    {\"id\": 5, \"name\": \"Transporter T5\", \"laneQuotes\": [{\"laneId\": 1, \"quote\": 11601}, {\"laneId\": 2, \"quote\": 19760}, {\"laneId\": 3, \"quote\": 40870}, {\"laneId\": 4, \"quote\": 20635}, {\"laneId\": 5, \"quote\": 26421}]},\n    {\"id\": 6, \"name\": \"Transporter T6\", \"laneQuotes\": [{\"laneId\": 1, \"quote\": 35095}, {\"laneId\": 2, \"quote\": 12494}, {\"laneId\": 3, \"quote\": 17808}, {\"laneId\": 4, \"quote\": 36210}, {\"laneId\": 5, \"quote\": 39444}]},\n    {\"id\": 7, \"name\": \"Transporter T7\", \"laneQuotes\": [{\"laneId\": 1, \"quote\": 26070}, {\"laneId\": 2, \"quote\": 41098}, {\"laneId\": 3, \"quote\": 20932}, {\"laneId\": 4, \"quote\": 16897}, {\"laneId\": 5, \"quote\": 27938}]}\n  ]\n}",
+                                                  "options":  {
+                                                                  "raw":  {
+                                                                              "language":  "json"
+                                                                          }
+                                                              },
+                                                  "mode":  "raw"
+                                              },
+                                     "header":  [
+                                                    {
+                                                        "key":  "Content-Type",
+                                                        "value":  "application/json"
+                                                    }
+                                                ]
+                                 }
+                 },
+                 {
+                     "name":  "Save Test Case 2 input",
+                     "request":  {
+                                     "url":  {
+                                                 "host":  [
+                                                              "{{baseUrl}}"
+                                                          ],
+                                                 "raw":  "{{baseUrl}}/api/v1/transporters/input",
+                                                 "path":  [
+                                                              "api",
+                                                              "v1",
+                                                              "transporters",
+                                                              "input"
+                                                          ]
+                                             },
+                                     "method":  "POST",
+                                     "body":  {
+                                                  "raw":  "{\n  \"lanes\": [\n    {\"id\": 1, \"origin\": \"Chandigarh\", \"destination\": \"Shimla\"},\n    {\"id\": 2, \"origin\": \"Agra\", \"destination\": \"Kanpur\"},\n    {\"id\": 3, \"origin\": \"Varanasi\", \"destination\": \"Gorakhpur\"},\n    {\"id\": 4, \"origin\": \"Amritsar\", \"destination\": \"Ludhiana\"},\n    {\"id\": 5, \"origin\": \"Coimbatore\", \"destination\": \"Madurai\"}\n  ],\n  \"transporters\": [\n    {\"id\": 1, \"name\": \"Transporter X\", \"laneQuotes\": [{\"laneId\": 1, \"quote\": 1000}, {\"laneId\": 2, \"quote\": 1500}]},\n    {\"id\": 2, \"name\": \"Transporter Y\", \"laneQuotes\": [{\"laneId\": 3, \"quote\": 2000}, {\"laneId\": 4, \"quote\": 1800}]},\n    {\"id\": 3, \"name\": \"Transporter Z\", \"laneQuotes\": [{\"laneId\": 5, \"quote\": 1200}]},\n    {\"id\": 4, \"name\": \"Transporter W\", \"laneQuotes\": [{\"laneId\": 1, \"quote\": 1100}, {\"laneId\": 4, \"quote\": 1750}]}\n  ]\n}",
+                                                  "options":  {
+                                                                  "raw":  {
+                                                                              "language":  "json"
+                                                                          }
+                                                              },
+                                                  "mode":  "raw"
+                                              },
+                                     "header":  [
+                                                    {
+                                                        "key":  "Content-Type",
+                                                        "value":  "application/json"
+                                                    }
+                                                ]
+                                 }
+                 },
+                 {
+                     "name":  "Save main example input",
+                     "request":  {
+                                     "url":  {
+                                                 "host":  [
+                                                              "{{baseUrl}}"
+                                                          ],
+                                                 "raw":  "{{baseUrl}}/api/v1/transporters/input",
+                                                 "path":  [
+                                                              "api",
+                                                              "v1",
+                                                              "transporters",
+                                                              "input"
+                                                          ]
+                                             },
+                                     "method":  "POST",
+                                     "body":  {
+                                                  "raw":  "{\n  \"lanes\": [\n    {\"id\": 1, \"origin\": \"Mumbai\", \"destination\": \"Delhi\"},\n    {\"id\": 2, \"origin\": \"Delhi\", \"destination\": \"Bangalore\"},\n    {\"id\": 3, \"origin\": \"Chennai\", \"destination\": \"Kolkata\"},\n    {\"id\": 4, \"origin\": \"Pune\", \"destination\": \"Hyderabad\"},\n    {\"id\": 5, \"origin\": \"Ahmedabad\", \"destination\": \"Jaipur\"},\n    {\"id\": 6, \"origin\": \"Guwahati\", \"destination\": \"Shillong\"},\n    {\"id\": 7, \"origin\": \"Lucknow\", \"destination\": \"Patna\"},\n    {\"id\": 8, \"origin\": \"Ranchi\", \"destination\": \"Bhubaneswar\"},\n    {\"id\": 9, \"origin\": \"Surat\", \"destination\": \"Indore\"},\n    {\"id\": 10, \"origin\": \"Nagpur\", \"destination\": \"Raipur\"}\n  ],\n  \"transporters\": [\n    {\"id\": 1, \"name\": \"Transporter T1\", \"laneQuotes\": [{\"laneId\": 1, \"quote\": 5000}, {\"laneId\": 2, \"quote\": 6000}]},\n    {\"id\": 2, \"name\": \"Transporter T2\", \"laneQuotes\": [{\"laneId\": 3, \"quote\": 7000}, {\"laneId\": 4, \"quote\": 4000}]},\n    {\"id\": 3, \"name\": \"Transporter T3\", \"laneQuotes\": [{\"laneId\": 5, \"quote\": 3000}, {\"laneId\": 6, \"quote\": 2000}]},\n    {\"id\": 4, \"name\": \"Transporter T4\", \"laneQuotes\": [{\"laneId\": 7, \"quote\": 8000}, {\"laneId\": 8, \"quote\": 5000}]},\n    {\"id\": 5, \"name\": \"Transporter T5\", \"laneQuotes\": [{\"laneId\": 9, \"quote\": 4500}, {\"laneId\": 10, \"quote\": 3500}]},\n    {\"id\": 6, \"name\": \"Transporter T6\", \"laneQuotes\": [{\"laneId\": 1, \"quote\": 5500}, {\"laneId\": 2, \"quote\": 6200}]},\n    {\"id\": 7, \"name\": \"Transporter T7\", \"laneQuotes\": [{\"laneId\": 3, \"quote\": 7500}, {\"laneId\": 4, \"quote\": 4500}]}\n  ]\n}",
+                                                  "options":  {
+                                                                  "raw":  {
+                                                                              "language":  "json"
+                                                                          }
+                                                              },
+                                                  "mode":  "raw"
+                                              },
+                                     "header":  [
+                                                    {
+                                                        "key":  "Content-Type",
+                                                        "value":  "application/json"
+                                                    }
+                                                ]
+                                 }
+                 },
+                 {
+                     "name":  "Get stored input",
+                     "request":  {
+                                     "method":  "GET",
+                                     "url":  {
+                                                 "host":  [
+                                                              "{{baseUrl}}"
+                                                          ],
+                                                 "raw":  "{{baseUrl}}/api/v1/transporters/input",
+                                                 "path":  [
+                                                              "api",
+                                                              "v1",
+                                                              "transporters",
+                                                              "input"
+                                                          ]
+                                             },
+                                     "header":  [
+
+                                                ]
+                                 }
+                 },
+                 {
+                     "name":  "Assignment max 2",
+                     "request":  {
+                                     "url":  {
+                                                 "host":  [
+                                                              "{{baseUrl}}"
+                                                          ],
+                                                 "raw":  "{{baseUrl}}/api/v1/transporters/assignment",
+                                                 "path":  [
+                                                              "api",
+                                                              "v1",
+                                                              "transporters",
+                                                              "assignment"
+                                                          ]
+                                             },
+                                     "method":  "POST",
+                                     "body":  {
+                                                  "raw":  "{\"maxTransporters\": 2}",
+                                                  "options":  {
+                                                                  "raw":  {
+                                                                              "language":  "json"
+                                                                          }
+                                                              },
+                                                  "mode":  "raw"
+                                              },
+                                     "header":  [
+                                                    {
+                                                        "key":  "Content-Type",
+                                                        "value":  "application/json"
+                                                    }
+                                                ]
+                                 }
+                 },
+                 {
+                     "name":  "Assignment max 3",
+                     "request":  {
+                                     "url":  {
+                                                 "host":  [
+                                                              "{{baseUrl}}"
+                                                          ],
+                                                 "raw":  "{{baseUrl}}/api/v1/transporters/assignment",
+                                                 "path":  [
+                                                              "api",
+                                                              "v1",
+                                                              "transporters",
+                                                              "assignment"
+                                                          ]
+                                             },
+                                     "method":  "POST",
+                                     "body":  {
+                                                  "raw":  "{\"maxTransporters\": 3}",
+                                                  "options":  {
+                                                                  "raw":  {
+                                                                              "language":  "json"
+                                                                          }
+                                                              },
+                                                  "mode":  "raw"
+                                              },
+                                     "header":  [
+                                                    {
+                                                        "key":  "Content-Type",
+                                                        "value":  "application/json"
+                                                    }
+                                                ]
+                                 }
+                 },
+                 {
+                     "name":  "Assignment max 4",
+                     "request":  {
+                                     "url":  {
+                                                 "host":  [
+                                                              "{{baseUrl}}"
+                                                          ],
+                                                 "raw":  "{{baseUrl}}/api/v1/transporters/assignment",
+                                                 "path":  [
+                                                              "api",
+                                                              "v1",
+                                                              "transporters",
+                                                              "assignment"
+                                                          ]
+                                             },
+                                     "method":  "POST",
+                                     "body":  {
+                                                  "raw":  "{\"maxTransporters\": 4}",
+                                                  "options":  {
+                                                                  "raw":  {
+                                                                              "language":  "json"
+                                                                          }
+                                                              },
+                                                  "mode":  "raw"
+                                              },
+                                     "header":  [
+                                                    {
+                                                        "key":  "Content-Type",
+                                                        "value":  "application/json"
+                                                    }
+                                                ]
+                                 }
+                 },
+                 {
+                     "name":  "Assignment max 5",
+                     "request":  {
+                                     "url":  {
+                                                 "host":  [
+                                                              "{{baseUrl}}"
+                                                          ],
+                                                 "raw":  "{{baseUrl}}/api/v1/transporters/assignment",
+                                                 "path":  [
+                                                              "api",
+                                                              "v1",
+                                                              "transporters",
+                                                              "assignment"
+                                                          ]
+                                             },
+                                     "method":  "POST",
+                                     "body":  {
+                                                  "raw":  "{\"maxTransporters\": 5}",
+                                                  "options":  {
+                                                                  "raw":  {
+                                                                              "language":  "json"
+                                                                          }
+                                                              },
+                                                  "mode":  "raw"
+                                              },
+                                     "header":  [
+                                                    {
+                                                        "key":  "Content-Type",
+                                                        "value":  "application/json"
+                                                    }
+                                                ]
+                                 }
+                 },
+                 {
+                     "name":  "Health",
+                     "request":  {
+                                     "method":  "GET",
+                                     "url":  {
+                                                 "host":  [
+                                                              "{{baseUrl}}"
+                                                          ],
+                                                 "raw":  "{{baseUrl}}/actuator/health",
+                                                 "path":  [
+                                                              "actuator",
+                                                              "health"
+                                                          ]
+                                             },
+                                     "header":  [
+
+                                                ]
+                                 }
+                 }
+             ],
+    "variable":  [
+                     {
+                         "key":  "baseUrl",
+                         "value":  "http://localhost:8080"
+                     }
+                 ]
+}

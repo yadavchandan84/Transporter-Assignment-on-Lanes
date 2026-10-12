@@ -1,0 +1,15 @@
+{
+  "lanes": [
+    {"id": 1, "origin": "Chandigarh", "destination": "Shimla"},
+    {"id": 2, "origin": "Agra", "destination": "Kanpur"},
+    {"id": 3, "origin": "Varanasi", "destination": "Gorakhpur"},
+    {"id": 4, "origin": "Amritsar", "destination": "Ludhiana"},
+    {"id": 5, "origin": "Coimbatore", "destination": "Madurai"}
+  ],
+  "transporters": [
+    {"id": 1, "name": "Transporter X", "laneQuotes": [{"laneId": 1, "quote": 1000}, {"laneId": 2, "quote": 1500}]},
+    {"id": 2, "name": "Transporter Y", "laneQuotes": [{"laneId": 3, "quote": 2000}, {"laneId": 4, "quote": 1800}]},
+    {"id": 3, "name": "Transporter Z", "laneQuotes": [{"laneId": 5, "quote": 1200}]},
+    {"id": 4, "name": "Transporter W", "laneQuotes": [{"laneId": 1, "quote": 1100}, {"laneId": 4, "quote": 1750}]}
+  ]
+}

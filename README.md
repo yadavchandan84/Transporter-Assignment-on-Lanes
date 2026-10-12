@@ -4,10 +4,13 @@ A Spring Boot 3 / Java 21 service that picks at most *N* transporters to cover e
 
 | | |
 |---|---|
-| Live deployed URL | `<LIVE_URL_PLACEHOLDER>` |
-| Swagger UI | `<LIVE_URL_PLACEHOLDER>/swagger-ui.html` (the root URL `/` redirects here) |
-| OpenAPI JSON | `<LIVE_URL_PLACEHOLDER>/v3/api-docs` |
+| Live deployed URL | https://freightfox-transporter-assignment.onrender.com |
+| Swagger UI | https://freightfox-transporter-assignment.onrender.com/swagger-ui.html (the root URL `/` redirects here) |
+| OpenAPI JSON | https://freightfox-transporter-assignment.onrender.com/v3/api-docs |
+| GitHub | https://github.com/yadavchandan84/freightfox-transporter-assignment |
 | Loom video | `<LOOM_URL_PLACEHOLDER>` |
+
+> **Live demo notes.** The service runs on Render's free tier. After about 15 minutes idle it sleeps, and the first request can take around 50 seconds while it wakes up. Data is kept in memory, so it resets on every restart or wake-up. If `POST /assignment` returns `404`, submit the input again with `POST /input` first.
 
 ## 1. Problem
 
@@ -36,7 +39,7 @@ The PDF calls its sample outputs "Response (Example)", and they do not match the
 
 | Dataset | maxTransporters | PDF example | Actual result |
 |---|---|---|---|
-| Main example (10 lanes) | 3 | 29000, selected [1,2,3] | **Infeasible (422).** Lanes 7–10 are quoted only by T4 and T5, and lanes 1–6 need T1/T6, T2/T7 and T3, so at least 5 transporters are required. The PDF example also assigns lanes to transporters that never quoted them (lane 7 → T2, lane 9 → T1, ...). |
+| Main example (10 lanes) | 3 (any value < 5) | 29000, selected [1,2,3] | **Infeasible (422).** Lanes 7–10 are quoted only by T4 and T5, and lanes 1–6 need T1/T6, T2/T7 and T3, so at least 5 transporters are required. The PDF example also assigns lanes to transporters that never quoted them (lane 7 → T2, lane 9 → T1, ...). |
 | Main example | 5 | – | **48000**, selected [1,2,3,4,5] (5000+6000+7000+4000+3000+2000+8000+5000+4500+3500) |
 | Test Case 1 | 3 | 75000, selected [4,6,3] | **60139**, selected [1,4,5]: lane1→T5 (11601), lane2→T1 (10512), lane3→T4 (14316), lane4→T4 (10678), lane5→T4 (13032). The PDF's own assignment adds up to 69001, not 75000, and gives lane 3 to T2, which is not in its selected list. |
 | Test Case 2 | 2 | – | **Infeasible (422).** At least 3 transporters are required. |
@@ -121,7 +124,7 @@ Request: `{"maxTransporters": 3}`. Response `200` (Test Case 1):
 |---|---|---|
 | 200 | success | – |
 | 400 | Bean Validation failure (`errors` like `lanes[0].origin: must not be blank`) | `Validation failed` |
-| 400 | malformed JSON, fractional/wrong-type numbers | `Malformed JSON request` |
+| 400 | malformed JSON, fractional/wrong-type values (`errors` like `transporters[0].laneQuotes[0].quote: expected an integer`) | `Malformed JSON request` |
 | 400 | duplicate lane/transporter ids, unknown lane reference, duplicate quote for a lane | `Invalid input data` |
 | 404 | no dataset submitted yet | `No input data found. Submit data via POST /api/v1/transporters/input first.` |
 | 405 | wrong HTTP method | Spring's message |
@@ -132,7 +135,7 @@ Request: `{"maxTransporters": 3}`. Response `200` (Test Case 1):
 ### curl (bash)
 
 ```bash
-BASE=http://localhost:8080
+BASE=http://localhost:8080   # or https://freightfox-transporter-assignment.onrender.com
 curl -s -X POST $BASE/api/v1/transporters/input -H 'Content-Type: application/json' -d @sample-data/test-case-1-input.json
 curl -s -X POST $BASE/api/v1/transporters/assignment -H 'Content-Type: application/json' -d '{"maxTransporters":3}'
 ```
@@ -174,7 +177,7 @@ docker run --rm -v "${PWD}:/app" -v "$env:USERPROFILE\.m2:/root/.m2" -w /app mav
 
 On Linux/macOS, `./mvnw clean verify` also works.
 
-The suite has 459 tests:
+The suite has 462 tests:
 - **Solver unit tests.** Every expected value in the table above, the tie-break rules, dominance, a zero time budget (heuristic fallback), and a performance case.
 - **Property tests.** 400 seeded random instances, including 100 with heavy ties, where every field must equal a brute-force reference solver. The heuristic and the minimum-cover calculator are also checked against brute force.
 - **Integration tests (MockMvc).** Exact API responses, dataset replacement, every validation and error path, Swagger and OpenAPI availability, the root redirect and actuator health.
@@ -186,9 +189,9 @@ The repo has a multi-stage, non-root `Dockerfile` and a `render.yaml` blueprint.
 1. Push the repository to GitHub.
 2. In Render, choose **New → Blueprint** and select the repository. Render reads `render.yaml`, which defines a Docker web service on the free plan with health check `/actuator/health`.
 3. Render injects `PORT`, and the app binds to it (`server.port=${PORT:8080}`).
-4. Once the service is live, open `https://<service>.onrender.com/` and you will be redirected to Swagger UI.
+4. Once the service is live, open https://freightfox-transporter-assignment.onrender.com/ and you will be redirected to Swagger UI. The OpenAPI document lists a relative `/` server first, so "Try it out" calls whichever host serves the UI.
 
-Free-tier services sleep when idle. The first request after a sleep can take about 30–60 s while the container starts.
+Free-tier services sleep when idle. The first request after a sleep can take about 50 s while the container starts, and the in-memory dataset starts empty again, so re-submit the input before calling `/assignment`. The endpoints are unauthenticated and share one global dataset, which is fine for this demo but means anyone using the live URL can replace the stored data.
 
 ## 9. Sample data
 

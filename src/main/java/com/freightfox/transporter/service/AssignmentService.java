@@ -21,7 +21,8 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 
 /** Loads the stored dataset, runs the solver and maps the outcome to the API. */
 @Service
@@ -31,30 +32,24 @@ public class AssignmentService {
     private final TransporterRepository transporterRepository;
     private final AssignmentSolver solver;
     private final SolverProperties solverProperties;
+    private final TransactionTemplate readOnlyTx;
 
     public AssignmentService(LaneRepository laneRepository, TransporterRepository transporterRepository,
-                             AssignmentSolver solver, SolverProperties solverProperties) {
+                             AssignmentSolver solver, SolverProperties solverProperties,
+                             PlatformTransactionManager transactionManager) {
         this.laneRepository = laneRepository;
         this.transporterRepository = transporterRepository;
         this.solver = solver;
         this.solverProperties = solverProperties;
+        this.readOnlyTx = new TransactionTemplate(transactionManager);
+        this.readOnlyTx.setReadOnly(true);
     }
 
-    @Transactional(readOnly = true)
     public AssignmentResponse assign(int maxTransporters) {
-        List<LaneEntity> lanes = laneRepository.findAll(Sort.by("id"));
-        if (lanes.isEmpty()) {
-            throw new NoInputDataException();
-        }
-        Map<Integer, Map<Integer, Long>> quotes = new LinkedHashMap<>();
-        for (TransporterEntity t : transporterRepository.findAllWithQuotes()) {
-            Map<Integer, Long> row = new HashMap<>();
-            for (LaneQuoteEntity q : t.getLaneQuotes()) {
-                row.put(q.getLane().getId(), q.getQuote());
-            }
-            quotes.put(t.getId(), row);
-        }
-        ProblemInstance instance = ProblemInstance.of(lanes.stream().map(LaneEntity::getId).toList(), quotes);
+        // Load inside a short read-only transaction; the solver then runs without holding a DB connection.
+        LoadedData data = readOnlyTx.execute(status -> load());
+        List<LaneEntity> lanes = data.lanes();
+        ProblemInstance instance = ProblemInstance.of(lanes.stream().map(LaneEntity::getId).toList(), data.quotes());
         SolverResult result = solver.solve(instance, maxTransporters, new SolverOptions(solverProperties.timeBudget()));
 
         return switch (result.status()) {
@@ -85,5 +80,24 @@ public class AssignmentService {
                     "No feasible assignment was found within the solver time budget.",
                     List.of("Try increasing maxTransporters."));
         };
+    }
+
+    private LoadedData load() {
+        List<LaneEntity> lanes = laneRepository.findAll(Sort.by("id"));
+        if (lanes.isEmpty()) {
+            throw new NoInputDataException();
+        }
+        Map<Integer, Map<Integer, Long>> quotes = new LinkedHashMap<>();
+        for (TransporterEntity t : transporterRepository.findAllWithQuotes()) {
+            Map<Integer, Long> row = new HashMap<>();
+            for (LaneQuoteEntity q : t.getLaneQuotes()) {
+                row.put(q.getLane().getId(), q.getQuote());
+            }
+            quotes.put(t.getId(), row);
+        }
+        return new LoadedData(lanes, quotes);
+    }
+
+    private record LoadedData(List<LaneEntity> lanes, Map<Integer, Map<Integer, Long>> quotes) {
     }
 }

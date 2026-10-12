@@ -4,11 +4,16 @@ import io.swagger.v3.oas.models.ExternalDocumentation;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.servers.Server;
+import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class OpenApiConfig {
+
+    private static final String REPO_URL = "https://github.com/yadavchandan84/freightfox-transporter-assignment";
+    private static final String LIVE_URL = "https://freightfox-transporter-assignment.onrender.com";
 
     @Bean
     public OpenAPI transporterOpenApi() {
@@ -29,9 +34,17 @@ public class OpenApiConfig {
                                 The solver is an exact branch-and-bound with a time budget; `optimal` in the \
                                 response tells whether optimality was proven. Examples are pre-filled with \
                                 Test Case 1 from the assignment brief.""")
-                        .contact(new Contact().name("Chandan").email("candidate@example.com")))
+                        .contact(new Contact()
+                                .name("Chandan Yadav")
+                                .email("yadavchandan6103@gmail.com")
+                                .url(REPO_URL)))
                 .externalDocs(new ExternalDocumentation()
                         .description("README: algorithm, assumptions and deployment")
-                        .url("https://github.com/<GITHUB_USER>/transporter-assignment#readme"));
+                        .url(REPO_URL + "#readme"))
+                // The relative server comes first so "Try it out" targets whichever host serves the UI.
+                .servers(List.of(
+                        new Server().url("/").description("Current host"),
+                        new Server().url(LIVE_URL).description("Live deployment (Render)"),
+                        new Server().url("http://localhost:8080").description("Local development")));
     }
 }

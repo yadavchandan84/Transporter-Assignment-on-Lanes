@@ -26,7 +26,11 @@ class OpenApiIntegrationTest {
                 .andExpect(jsonPath("$.paths['/api/v1/transporters/input']").exists())
                 .andExpect(jsonPath("$.paths['/api/v1/transporters/assignment']").exists())
                 .andExpect(jsonPath("$.paths['/api/v1/transporters/input'].post.requestBody.content"
-                        + "['application/json'].examples['Test Case 1']").exists());
+                        + "['application/json'].examples['Test Case 1']").exists())
+                .andExpect(jsonPath("$.servers[0].url").value("/"))
+                .andExpect(jsonPath("$.servers[1].url")
+                        .value("https://freightfox-transporter-assignment.onrender.com"))
+                .andExpect(jsonPath("$.info.contact.email").value("yadavchandan6103@gmail.com"));
     }
 
     @Test

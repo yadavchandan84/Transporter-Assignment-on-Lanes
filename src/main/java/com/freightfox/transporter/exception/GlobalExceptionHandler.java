@@ -1,8 +1,14 @@
 package com.freightfox.transporter.exception;
 
+import com.fasterxml.jackson.core.JsonLocation;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.freightfox.transporter.dto.ErrorResponse;
 import jakarta.validation.ConstraintViolationException;
+import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +31,6 @@ public class GlobalExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
     private static final String VALIDATION_FAILED = "Validation failed";
-    private static final int MAX_CAUSE_LENGTH = 300;
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleInvalidBody(MethodArgumentNotValidException ex) {
@@ -63,16 +68,74 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorResponse> handleNotReadable(HttpMessageNotReadableException ex) {
-        Throwable cause = ex;
-        while (cause.getCause() != null && cause.getCause() != cause) {
-            cause = cause.getCause();
+        // Jackson's own messages contain internal class names, so only a short hint is returned.
+        log.debug("Unreadable request body", ex);
+        return respond(HttpStatus.BAD_REQUEST, "Malformed JSON request", List.of(describeUnreadable(ex)));
+    }
+
+    private static String describeUnreadable(HttpMessageNotReadableException ex) {
+        Throwable cause = ex.getCause();
+        if (cause == null) {
+            return "Request body is missing or unreadable";
         }
-        String detail = cause.getMessage() == null ? "Request body is missing or unreadable" : cause.getMessage();
-        detail = detail.strip();
-        if (detail.length() > MAX_CAUSE_LENGTH) {
-            detail = detail.substring(0, MAX_CAUSE_LENGTH);
+        // Syntax errors inside nested values arrive wrapped in a JsonMappingException.
+        for (Throwable t = cause; t != null; t = t.getCause() == t ? null : t.getCause()) {
+            if (t instanceof JsonParseException) {
+                cause = t;
+                break;
+            }
         }
-        return respond(HttpStatus.BAD_REQUEST, "Malformed JSON request", List.of(detail));
+        if (cause instanceof JsonParseException jpe) {
+            JsonLocation loc = jpe.getLocation();
+            return loc == null || loc.getLineNr() < 0
+                    ? "Request body is not valid JSON"
+                    : "Invalid JSON syntax at line %d, column %d".formatted(loc.getLineNr(), loc.getColumnNr());
+        }
+        if (cause instanceof JsonMappingException jme) {
+            String path = fieldPath(jme.getPath());
+            if (path.isEmpty()) {
+                return "Request body does not match the expected structure";
+            }
+            Class<?> target = jme instanceof MismatchedInputException mie ? mie.getTargetType() : null;
+            return target == null ? path + ": invalid value" : path + ": expected " + describeType(target);
+        }
+        return "Request body is not valid JSON";
+    }
+
+    private static String fieldPath(List<JsonMappingException.Reference> refs) {
+        StringBuilder sb = new StringBuilder();
+        for (JsonMappingException.Reference ref : refs) {
+            if (ref.getFieldName() != null) {
+                if (!sb.isEmpty()) {
+                    sb.append('.');
+                }
+                sb.append(ref.getFieldName());
+            } else if (ref.getIndex() >= 0) {
+                sb.append('[').append(ref.getIndex()).append(']');
+            }
+        }
+        return sb.toString();
+    }
+
+    private static String describeType(Class<?> type) {
+        if (type == int.class || type == long.class || type == short.class || type == byte.class
+                || type == Integer.class || type == Long.class || type == Short.class || type == Byte.class
+                || type == BigInteger.class) {
+            return "an integer";
+        }
+        if (type == double.class || type == float.class || Number.class.isAssignableFrom(type)) {
+            return "a number";
+        }
+        if (type == boolean.class || type == Boolean.class) {
+            return "a boolean";
+        }
+        if (CharSequence.class.isAssignableFrom(type) || type == char.class || type == Character.class) {
+            return "a string";
+        }
+        if (type.isArray() || Collection.class.isAssignableFrom(type)) {
+            return "an array";
+        }
+        return "an object";
     }
 
     @ExceptionHandler(InvalidInputException.class)

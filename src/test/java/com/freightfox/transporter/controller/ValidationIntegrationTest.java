@@ -1,6 +1,8 @@
 package com.freightfox.transporter.controller;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.startsWith;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -79,7 +81,21 @@ class ValidationIntegrationTest {
 
     @Test
     void fractionalQuote_returns400_malformed() throws Exception {
-        expectError(postInput(withQuote("5000.5")), "Malformed JSON request");
+        expectError(postInput(withQuote("5000.5")), "Malformed JSON request")
+                .andExpect(jsonPath("$.errors[0]").value("transporters[0].laneQuotes[0].quote: expected an integer"));
+    }
+
+    @Test
+    void typeMismatch_returns400_withoutInternalDetails() throws Exception {
+        expectError(postInput(withQuote("\"abc\"")), "Malformed JSON request")
+                .andExpect(jsonPath("$.errors[0]").value("transporters[0].laneQuotes[0].quote: expected an integer"))
+                .andExpect(jsonPath("$.errors[0]").value(not(containsString("com.freightfox"))));
+    }
+
+    @Test
+    void wrongStructure_returns400_withFieldPath() throws Exception {
+        expectError(postInput("{\"lanes\":{\"id\":1},\"transporters\":[]}"), "Malformed JSON request")
+                .andExpect(jsonPath("$.errors[0]").value("lanes: expected an array"));
     }
 
     @Test
@@ -121,7 +137,15 @@ class ValidationIntegrationTest {
 
     @Test
     void malformedJson_returns400() throws Exception {
-        expectError(postInput("{\"lanes\": [ oops"), "Malformed JSON request");
+        expectError(postInput("{\"lanes\": [ oops"), "Malformed JSON request")
+                .andExpect(jsonPath("$.errors[0]").value(startsWith("Invalid JSON syntax at line 1")))
+                .andExpect(jsonPath("$.errors[0]").value(not(containsString("jackson"))));
+    }
+
+    @Test
+    void emptyBody_returns400() throws Exception {
+        expectError(postInput(""), "Malformed JSON request")
+                .andExpect(jsonPath("$.errors[0]").value("Request body is missing or unreadable"));
     }
 
     @Test

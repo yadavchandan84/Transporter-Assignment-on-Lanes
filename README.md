@@ -7,7 +7,7 @@ A Spring Boot 3 / Java 21 service that picks at most *N* transporters to cover e
 | Live deployed URL | https://freightfox-transporter-assignment.onrender.com |
 | Swagger UI | https://freightfox-transporter-assignment.onrender.com/swagger-ui.html (the root URL `/` redirects here) |
 | OpenAPI JSON | https://freightfox-transporter-assignment.onrender.com/v3/api-docs |
-| GitHub | https://github.com/yadavchandan84/freightfox-transporter-assignment |
+| GitHub | https://github.com/yadavchandan84/Transporter-Assignment-on-Lanes |
 | Loom video | https://www.loom.com/share/038622adb3984b1695271be0db683e01 |
 
 > **Live demo notes.** The service runs on Render's free tier. After about 15 minutes idle it sleeps, and the first request can take around 50 seconds while it wakes up. Data is kept in memory, so it resets on every restart or wake-up. If `POST /assignment` returns `404`, submit the input again with `POST /input` first.
